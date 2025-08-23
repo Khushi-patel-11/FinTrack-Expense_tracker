@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+
+# Python cache and virtualenv
+__pycache__/
+*.pyc
+venv/
+env/
+
+# Qwen model and related folders
+qwen*
+qwen-vl*
+Qwen*
+Qwen-VL*
+# Qwen model folders/files
+qwen/
+qwen-vl/
+Qwen/
+Qwen-VL/
+*.bin
+*.pt
+# Temporary files
+tmp/
+*.tmp
+
+# Django secret files
+*.sqlite3
+*.log
+
+# VSCode and OS files
+.vscode/
+.DS_Store
+
+# Environment variables
+.env
+.env.*
+
+# Ignore settings with credentials (see step 2)
+ex_backend/ex_django/settings.py
