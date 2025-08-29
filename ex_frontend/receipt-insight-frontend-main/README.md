@@ -1,63 +1,90 @@
-# Welcome to your Expense tracker  project
+# FinTrack - Expense Tracker
 
-## Project info
+A full-stack Expense Tracker web application built with Django (backend) and React (frontend).
 
-**URL**:
+## Features
 
-## How can I edit this code?
+- User authentication and secure login
+- Add, edit, and delete expenses with categories
+- Monthly and category-wise budget tracking
+- Pie chart and trend chart visualizations
+- Savings and overspending insights
+- Predict next month's expenses
+- Responsive dashboard with light and dark mode support
 
-There are several ways of editing your application.
+## Tech Stack
+
+- **Frontend:** React, Tailwind CSS
+- **Backend:** Django, Django REST Framework
+- **Database:** SQLite 
+- **Visualization:** Chart.js (via React wrappers)
 
 
-**Use your preferred IDE**
+## Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. 
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js & npm
+- Python 3.9+
+- pip
 
-Follow these steps:
+### Backend Setup
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. Navigate to the backend folder:
+   ```sh
+   cd ex_backend
+   ```
+2. Install dependencies:
+   ```sh
+   pip install -r requirements.txt
+   ```
+3. Set up environment variables (create a `.env` file for secrets like email credentials).
+4. Run migrations:
+   ```sh
+   python manage.py migrate
+   ```
+5. Start the server:
+   ```sh
+   python manage.py runserver
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend Setup
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. Navigate to the frontend folder:
+   ```sh
+   cd ex_frontend/receipt-insight-frontend-main
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Start the React app:
+   ```sh
+   npm start
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Usage
+
+- Register or log in.
+- Add expenses manually or via receipt upload.
+- View charts and savings insights on the dashboard.
+- Set monthly/category budgets.
+
+## Folder Structure
+
+```
+expense_tracker/
+├── ex_backend/           # Django backend
+│   ├── ex_django/        # Django project settings
+│   └── expenses/         # Expense app
+├── ex_frontend/
+│   └── receipt-insight-frontend-main/  # React frontend
 ```
 
-**Edit a file directly in GitHub**
+## Security & Privacy
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Sensitive files (models, credentials, etc.) are excluded via `.gitignore`.
+- Do **not** commit your `.env` or secret keys.
 
-**Use GitHub Codespaces**
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## Can I connect a custom domain to my  project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
