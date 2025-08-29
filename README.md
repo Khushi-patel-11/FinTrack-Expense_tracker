@@ -1,4 +1,4 @@
-# Expense Tracker
+# FinTrack - Expense Tracker
 
 A full-stack Expense Tracker web application built with Django (backend) and React (frontend).
 
