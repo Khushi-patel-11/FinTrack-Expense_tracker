@@ -90,8 +90,14 @@ label_encoder = joblib.load(os.path.join(BASE_DIR, 'ml_model', 'label_encoder.pk
 tfidf = joblib.load(os.path.join(BASE_DIR, 'ml_model', 'tfidf_vectorizer.pkl'))
 word2vec = KeyedVectors.load(os.path.join(BASE_DIR, 'ml_model', 'word2vec_model.kv'))
 
-# Load BERT model (downloads automatically if not cached)
-bert_model = SentenceTransformer('all-mpnet-base-v2')
+bert_model = None
+
+
+def get_bert_model():
+    global bert_model
+    if bert_model is None:
+        bert_model = SentenceTransformer('all-mpnet-base-v2')
+    return bert_model
 
 # Clean text: lowercase, remove non-alphabet characters, normalize spaces
 def clean_text(text):
@@ -110,7 +116,7 @@ def predict_category(item_name):
     
     cleaned_item = clean_text(item_name)
 
-    bert_emb = bert_model.encode([cleaned_item])
+    bert_emb = get_bert_model().encode([cleaned_item])
     tfidf_emb = tfidf.transform([cleaned_item]).toarray()
     w2v_emb = np.array([get_word2vec_embedding(cleaned_item)])
 

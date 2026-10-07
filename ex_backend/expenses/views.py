@@ -223,7 +223,6 @@ from PIL import Image
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 # from .qwen_model import load_model, model, processor
-from . import qwen_model 
 from django.core.files.storage import default_storage
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view  ,permission_classes
@@ -247,110 +246,110 @@ from decimal import Decimal
 from rest_framework import generics
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, UpdateAPIView
 
-@csrf_exempt
-@api_view(['POST'])
-def extract_receipt_info(request):
-    try:
-        print("📥 Received extract request")
-        print("➡️ FILES:", request.FILES)
-        print("➡️ POST:", request.POST)
+# @csrf_exempt
+# @api_view(['POST'])
+# def extract_receipt_info(request):
+#     try:
+#         print("📥 Received extract request")
+#         print("➡️ FILES:", request.FILES)
+#         print("➡️ POST:", request.POST)
 
-        if request.method != "POST" or 'receipt' not in request.FILES:
-            return JsonResponse({"error": "No image provided"}, status=400)
+#         if request.method != "POST" or 'receipt' not in request.FILES:
+#             return JsonResponse({"error": "No image provided"}, status=400)
 
-        # Load model
-        qwen_model.load_qwen_model()
-        print('load model is done')
-        if qwen_model.model is None :
-            print('MOdel is not loaded')
-            return JsonResponse({"error": "Model not loaded properly. Check logs."}, status=500)
+#         # Load model
+#         qwen_model.load_qwen_model()
+#         print('load model is done')
+#         if qwen_model.model is None :
+#             print('MOdel is not loaded')
+#             return JsonResponse({"error": "Model not loaded properly. Check logs."}, status=500)
         
-        if qwen_model.processor is None:
-            print('Processor is not loaded')
-            return JsonResponse({"error": "Processor is None"}, status=500)
-        print('Check both model and processor')
-        # Save and load image
-        image_file = request.FILES['receipt']   
-        print('image file fetched')
-        image_path = default_storage.save("tmp/" + image_file.name, image_file) 
-        print('image path is done')
-        image = Image.open(os.path.join(default_storage.location, image_path)).convert("RGB")
-        print('image is opend')
-        image = image.resize((512, 512))
-        print('image resized is done')
+#         if qwen_model.processor is None:
+#             print('Processor is not loaded')
+#             return JsonResponse({"error": "Processor is None"}, status=500)
+#         print('Check both model and processor')
+#         # Save and load image
+#         image_file = request.FILES['receipt']   
+#         print('image file fetched')
+#         image_path = default_storage.save("tmp/" + image_file.name, image_file) 
+#         print('image path is done')
+#         image = Image.open(os.path.join(default_storage.location, image_path)).convert("RGB")
+#         print('image is opend')
+#         image = image.resize((512, 512))
+#         print('image resized is done')
         
-        print('Image is done')
-        # Prompt
-        messages = [{
-            "role": "user",
-            "content": [
-                {"type": "image", "image": image},
-                {"type": "text", "text": (
-                    "Extract the following from this receipt image:\n\n"
-                    "📋 Basic Info:\n- Company Name\n- Date\n- Total Amount\n\n"
-                    "📦 Items:\nOnly final items with total price. Skip tax and total rows.\n\n"
-                    "📄 Format:\nCompany Name: <value>\nDate: <value>\nTotal Amount: <value>\n\n"
-                    "Items:\n- Item: <name>, Price: <price>"
-                )}
-            ]
-        }]
-        print('Message is seen')
+#         print('Image is done')
+#         # Prompt
+#         messages = [{
+#             "role": "user",
+#             "content": [
+#                 {"type": "image", "image": image},
+#                 {"type": "text", "text": (
+#                     "Extract the following from this receipt image:\n\n"
+#                     "📋 Basic Info:\n- Company Name\n- Date\n- Total Amount\n\n"
+#                     "📦 Items:\nOnly final items with total price. Skip tax and total rows.\n\n"
+#                     "📄 Format:\nCompany Name: <value>\nDate: <value>\nTotal Amount: <value>\n\n"
+#                     "Items:\n- Item: <name>, Price: <price>"
+#                 )}
+#             ]
+#         }]
+#         print('Message is seen')
 
-        # Format inputs
-        text = qwen_model.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        print('text is done')
+#         # Format inputs
+#         text = qwen_model.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+#         print('text is done')
         
-        image_inputs, video_inputs = process_vision_info(messages)
-        print('inputs are done')
-        inputs = processor(
-            text=[text], images=image_inputs, videos=video_inputs, padding=True, return_tensors="pt"
-        ).to("cpu")
-        print('inputs are done with cuda' )
+#         image_inputs, video_inputs = process_vision_info(messages)
+#         print('inputs are done')
+#         inputs = processor(
+#             text=[text], images=image_inputs, videos=video_inputs, padding=True, return_tensors="pt"
+#         ).to("cpu")
+#         print('inputs are done with cuda' )
 
-        # Generate
-        with torch.no_grad():
-            generated_ids = qwen_model.model.generate(**inputs, max_new_tokens=400)
-        print('generated ids are done')
+#         # Generate
+#         with torch.no_grad():
+#             generated_ids = qwen_model.model.generate(**inputs, max_new_tokens=400)
+#         print('generated ids are done')
         
-        output = qwen_model.processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
-        print('output is done')
+#         output = qwen_model.processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+#         print('output is done')
 
-        # Parse output
-        details = {}
-        items = []
-        parsing_items = False
-        exclude = {"sgst", "cgst", "vat", "tax", "total", "due", "balance", "rounding"}
+#         # Parse output
+#         details = {}
+#         items = []
+#         parsing_items = False
+#         exclude = {"sgst", "cgst", "vat", "tax", "total", "due", "balance", "rounding"}
 
-        for line in output.splitlines():
-            line = line.strip().lstrip("*").replace("**", "").replace("-", "").strip()
+#         for line in output.splitlines():
+#             line = line.strip().lstrip("*").replace("**", "").replace("-", "").strip()
 
-            if line.lower().startswith("items"):
-                parsing_items = True
-                continue
+#             if line.lower().startswith("items"):
+#                 parsing_items = True
+#                 continue
 
-            if parsing_items and "Item:" in line and "Price:" in line:
-                try:
-                    item_part, price_part = line.split("Price:")
-                    item = item_part.split("Item:")[1].strip().strip(",")
-                    price = price_part.strip()
-                    if item.lower() not in exclude:
-                        items.append({"Item": item, "Price": price})
-                except:
-                    continue
-            elif ":" in line and not parsing_items:
-                key, value = line.split(":", 1)
-                details[key.strip()] = value.strip()
-        print('loop is done')
-        if items:
-            details["Items"] = items
+#             if parsing_items and "Item:" in line and "Price:" in line:
+#                 try:
+#                     item_part, price_part = line.split("Price:")
+#                     item = item_part.split("Item:")[1].strip().strip(",")
+#                     price = price_part.strip()
+#                     if item.lower() not in exclude:
+#                         items.append({"Item": item, "Price": price})
+#                 except:
+#                     continue
+#             elif ":" in line and not parsing_items:
+#                 key, value = line.split(":", 1)
+#                 details[key.strip()] = value.strip()
+#         print('loop is done')
+#         if items:
+#             details["Items"] = items
 
-        return JsonResponse(details)
+#         return JsonResponse(details)
 
-    except Exception as e:
-        print('Its an error')
-        import traceback
-        traceback.print_exc()
-        return JsonResponse({"error": str(e)}, status=500)
+#     except Exception as e:
+#         print('Its an error')
+#         import traceback
+#         traceback.print_exc()
+#         return JsonResponse({"error": str(e)}, status=500)
 
 class ExpenseCreateAPIView(CreateAPIView):
     serializer_class = ExpenseSerializer

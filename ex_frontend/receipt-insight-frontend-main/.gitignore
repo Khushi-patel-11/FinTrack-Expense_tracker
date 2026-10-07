@@ -1,39 +1,68 @@
-# Node modules
-node_modules/
 
-# Python cache and virtualenv
+# ============================================================
+# Node / React
+# ============================================================
+
+node_modules/
+dist/
+build/
+
+# ============================================================
+# Python
+# ============================================================
+
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Virtual environments
 venv/
 env/
+.venv/
 
-# Qwen model and related folders
-qwen*
-qwen-vl*
-Qwen*
-Qwen-VL*
-# Qwen model folders/files
-qwen/
-qwen-vl/
-Qwen/
-Qwen-VL/
-*.bin
-*.pt
-# Temporary files
-tmp/
-*.tmp
+# ============================================================
+# Environment variables / secrets
+# ============================================================
 
-# Django secret files
+.env
+.env.*
+!.env.example
+
+# ============================================================
+# Django
+# ============================================================
+
 *.sqlite3
 *.log
 
-# VSCode and OS files
+staticfiles/
+media/
+
+# ============================================================
+# Qwen / Large AI Model Files
+# ============================================================
+
+qwen*
+Qwen*
+qwen-vl*
+Qwen-VL*
+
+# Large model formats
+*.bin
+*.pt
+
+# ============================================================
+# Temporary files
+# ============================================================
+
+tmp/
+*.tmp
+
+# ============================================================
+# VS Code / OS
+# ============================================================
+
 .vscode/
 .DS_Store
-
-# Environment variables
-.env
-.env.*
-
-# Ignore settings with credentials (see step 2)
-ex_backend/ex_django/settings.py
+Thumbs.db
+dist/
+build/

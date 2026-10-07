@@ -466,27 +466,27 @@
 // };
 
 // export default OCRExtraction;
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { FaRobot, FaTimes, FaCheckCircle, FaPlus } from 'react-icons/fa';
-import ScrollToTop from '@/components/ScrollToTop';
-import axios from 'axios';
+// import { useState } from 'react';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { Button } from '@/components/ui/button';
+// import { Input } from '@/components/ui/input';
+// import { Label } from '@/components/ui/label';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import { useToast } from '@/hooks/use-toast';
+// import { FaRobot, FaTimes, FaCheckCircle, FaPlus } from 'react-icons/fa';
+// import ScrollToTop from '@/components/ScrollToTop';
+// import axios from 'axios';
 
-const OCRExtraction = ({ uploadedFile, previewUrl, onAddToReport, onClose }) => {
-  const { toast } = useToast();
-  const [isExtracting, setIsExtracting] = useState(false);
-  const [extractedData, setExtractedData] = useState(null);
-  const [editableData, setEditableData] = useState({
-    company: '',
-    date: '',
-    amount: '',
-    items: [],
-  });
+// const OCRExtraction = ({ uploadedFile, previewUrl, onAddToReport, onClose }) => {
+//   const { toast } = useToast();
+//   const [isExtracting, setIsExtracting] = useState(false);
+//   const [extractedData, setExtractedData] = useState(null);
+//   const [editableData, setEditableData] = useState({
+//     company: '',
+//     date: '',
+//     amount: '',
+//     items: [],
+//   });
 
   // const extractFromBackend = async () => {
   //   if (!uploadedFile) {
@@ -532,194 +532,194 @@ const OCRExtraction = ({ uploadedFile, previewUrl, onAddToReport, onClose }) => 
   //   }
   // };
 
-  const extractFromBackend = async () => {
-    if (!uploadedFile) {
-      toast({
-        title: "Upload Required",
-        description: "Please upload a receipt image first.",
-        variant: "destructive",
-      });
-      return;
-    }
+  // const extractFromBackend = async () => {
+  //   if (!uploadedFile) {
+  //     toast({
+  //       title: "Upload Required",
+  //       description: "Please upload a receipt image first.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
 
-    setIsExtracting(true);
+  //   setIsExtracting(true);
 
-    const formData = new FormData();
-    formData.append("receipt", uploadedFile);  // ✅ This is correct
+  //   const formData = new FormData();
+  //   formData.append("receipt", uploadedFile);  // ✅ This is correct
 
-    try {
-      const res = await axios.post("http://127.0.0.1:8000/extract/", formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+//     try {
+//       const res = await axios.post("http://127.0.0.1:8000/extract/", formData, {
+//         headers: {
+//           'Content-Type': 'multipart/form-data'
+//         }
+//       });
 
-      const data = res.data;
+//       const data = res.data;
 
-      if (res.status === 200) {
-        const formatted = {
-          company: data["Company Name"] || '',
-          date: data["Date"] || '',
-          amount: data["Total Amount"] || '',
-          items: (data.Items || []).map(item => ({
-            name: item.Item,
-            price: item.Price
-          })),
-        };
+//       if (res.status === 200) {
+//         const formatted = {
+//           company: data["Company Name"] || '',
+//           date: data["Date"] || '',
+//           amount: data["Total Amount"] || '',
+//           items: (data.Items || []).map(item => ({
+//             name: item.Item,
+//             price: item.Price
+//           })),
+//         };
 
-        setExtractedData(formatted);
-        setEditableData(formatted);
+//         setExtractedData(formatted);
+//         setEditableData(formatted);
 
-        toast({
-          title: "Extraction Success",
-          description: "Receipt data extracted."
-        });
+//         toast({
+//           title: "Extraction Success",
+//           description: "Receipt data extracted."
+//         });
 
-      } else {
-        toast({
-          title: "Extraction Failed",
-          description: data.error || "Try another receipt.",
-          variant: "destructive"
-        });
-      }
+//       } else {
+//         toast({
+//           title: "Extraction Failed",
+//           description: data.error || "Try another receipt.",
+//           variant: "destructive"
+//         });
+//       }
 
-    } catch (err) {
-      console.error("OCR API error:", err);
-      toast({
-        title: "Server Error",
-        description: "Could not connect to OCR API.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsExtracting(false);
-    }
-  };
+//     } catch (err) {
+//       console.error("OCR API error:", err);
+//       toast({
+//         title: "Server Error",
+//         description: "Could not connect to OCR API.",
+//         variant: "destructive"
+//       });
+//     } finally {
+//       setIsExtracting(false);
+//     }
+//   };
 
-  const handleInputChange = (field, value) => {
-    setEditableData((prev) => ({ ...prev, [field]: value }));
-  };
+//   const handleInputChange = (field, value) => {
+//     setEditableData((prev) => ({ ...prev, [field]: value }));
+//   };
 
-  const handleItemChange = (index, field, value) => {
-    setEditableData((prev) => ({
-      ...prev,
-      items: prev.items.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item
-      ),
-    }));
-  };
+//   const handleItemChange = (index, field, value) => {
+//     setEditableData((prev) => ({
+//       ...prev,
+//       items: prev.items.map((item, i) =>
+//         i === index ? { ...item, [field]: value } : item
+//       ),
+//     }));
+//   };
 
-  const handleAddToReport = () => {
-    if (!editableData.company || !editableData.amount || !editableData.date) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
-    }
-    onAddToReport(editableData);
-    toast({ title: "Saved!", description: "Added to report." });
-  };
+//   const handleAddToReport = () => {
+//     if (!editableData.company || !editableData.amount || !editableData.date) {
+//       toast({
+//         title: "Validation Error",
+//         description: "Please fill in all required fields.",
+//         variant: "destructive",
+//       });
+//       return;
+//     }
+//     onAddToReport(editableData);
+//     toast({ title: "Saved!", description: "Added to report." });
+//   };
 
-  const totalAmount = editableData.items.reduce((sum, item) => sum + parseFloat(item.price || 0), 0);
+//   const totalAmount = editableData.items.reduce((sum, item) => sum + parseFloat(item.price || 0), 0);
 
-  return (
-    <div className="space-y-6">
-      <div className="relative">
-        <img
-          src={previewUrl}
-          alt="Receipt preview"
-          className="w-full max-w-md mx-auto rounded-lg border shadow-lg"
-        />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onClose}
-          className="absolute top-2 right-2 bg-white/80 hover:bg-white text-slate-600 hover:text-red-500"
-        >
-          <FaTimes className="h-4 w-4" />
-        </Button>
-      </div>
+//   return (
+//     <div className="space-y-6">
+//       <div className="relative">
+//         <img
+//           src={previewUrl}
+//           alt="Receipt preview"
+//           className="w-full max-w-md mx-auto rounded-lg border shadow-lg"
+//         />
+//         <Button
+//           variant="ghost"
+//           size="sm"
+//           onClick={onClose}
+//           className="absolute top-2 right-2 bg-white/80 hover:bg-white text-slate-600 hover:text-red-500"
+//         >
+//           <FaTimes className="h-4 w-4" />
+//         </Button>
+//       </div>
 
-      {!extractedData && !isExtracting && (
-        <div className="text-center">
-          <Button
-            onClick={extractFromBackend}
-            className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
-          >
-            <FaRobot className="mr-2 h-4 w-4" />
-            Extract Data with OCR
-          </Button>
-        </div>
-      )}
+//       {!extractedData && !isExtracting && (
+//         <div className="text-center">
+//           <Button
+//             onClick={extractFromBackend}
+//             className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
+//           >
+//             <FaRobot className="mr-2 h-4 w-4" />
+//             Extract Data with OCR
+//           </Button>
+//         </div>
+//       )}
 
-      {isExtracting && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border text-center"
-        >
-          <div className="animate-spin text-blue-600 dark:text-blue-400 mb-2">
-            <FaRobot className="h-8 w-8" />
-          </div>
-          <p className="text-sm text-blue-600 dark:text-blue-300">Extracting data...</p>
-        </motion.div>
-      )}
+//       {isExtracting && (
+//         <motion.div
+//           initial={{ opacity: 0, scale: 0.9 }}
+//           animate={{ opacity: 1, scale: 1 }}
+//           className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border text-center"
+//         >
+//           <div className="animate-spin text-blue-600 dark:text-blue-400 mb-2">
+//             <FaRobot className="h-8 w-8" />
+//           </div>
+//           <p className="text-sm text-blue-600 dark:text-blue-300">Extracting data...</p>
+//         </motion.div>
+//       )}
 
-      <AnimatePresence>
-        {extractedData && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="space-y-6"
-          >
-            <Card className="bg-emerald-50 dark:bg-emerald-900/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200">
-                  <FaCheckCircle className="h-5 w-5" />
-                  Extracted Receipt Data
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Company Name</Label>
-                  <Input value={editableData.company} onChange={(e) => handleInputChange('company', e.target.value)} />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Date</Label>
-                    <Input type="date" value={editableData.date} onChange={(e) => handleInputChange('date', e.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Total Amount</Label>
-                    <Input type="number" value={editableData.amount} onChange={(e) => handleInputChange('amount', e.target.value)} />
-                  </div>
-                </div>
+//       <AnimatePresence>
+//         {extractedData && (
+//           <motion.div
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             exit={{ opacity: 0, y: -20 }}
+//             className="space-y-6"
+//           >
+//             <Card className="bg-emerald-50 dark:bg-emerald-900/20">
+//               <CardHeader>
+//                 <CardTitle className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200">
+//                   <FaCheckCircle className="h-5 w-5" />
+//                   Extracted Receipt Data
+//                 </CardTitle>
+//               </CardHeader>
+//               <CardContent className="space-y-4">
+//                 <div className="space-y-2">
+//                   <Label>Company Name</Label>
+//                   <Input value={editableData.company} onChange={(e) => handleInputChange('company', e.target.value)} />
+//                 </div>
+//                 <div className="grid grid-cols-2 gap-4">
+//                   <div className="space-y-2">
+//                     <Label>Date</Label>
+//                     <Input type="date" value={editableData.date} onChange={(e) => handleInputChange('date', e.target.value)} />
+//                   </div>
+//                   <div className="space-y-2">
+//                     <Label>Total Amount</Label>
+//                     <Input type="number" value={editableData.amount} onChange={(e) => handleInputChange('amount', e.target.value)} />
+//                   </div>
+//                 </div>
 
-                <div className="space-y-3">
-                  <Label>Extracted Items</Label>
-                  {editableData.items.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <Input value={item.name} onChange={(e) => handleItemChange(idx, 'name', e.target.value)} placeholder="Item" />
-                      <Input type="number" value={item.price} onChange={(e) => handleItemChange(idx, 'price', e.target.value)} className="w-24" />
-                    </div>
-                  ))}
-                  <p className="text-right text-sm">Calculated Total: ₹{totalAmount.toFixed(2)}</p>
-                </div>
+//                 <div className="space-y-3">
+//                   <Label>Extracted Items</Label>
+//                   {editableData.items.map((item, idx) => (
+//                     <div key={idx} className="flex items-center gap-3">
+//                       <Input value={item.name} onChange={(e) => handleItemChange(idx, 'name', e.target.value)} placeholder="Item" />
+//                       <Input type="number" value={item.price} onChange={(e) => handleItemChange(idx, 'price', e.target.value)} className="w-24" />
+//                     </div>
+//                   ))}
+//                   <p className="text-right text-sm">Calculated Total: ₹{totalAmount.toFixed(2)}</p>
+//                 </div>
 
-                <div className="text-right pt-4">
-                  <Button onClick={handleAddToReport} className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
-                    <FaPlus className="mr-2" /> Add to Report
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
+//                 <div className="text-right pt-4">
+//                   <Button onClick={handleAddToReport} className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+//                     <FaPlus className="mr-2" /> Add to Report
+//                   </Button>
+//                 </div>
+//               </CardContent>
+//             </Card>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </div>
+//   );
+// };
 
-export default OCRExtraction;
+// export default OCRExtraction;

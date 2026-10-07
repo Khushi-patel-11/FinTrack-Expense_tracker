@@ -16,7 +16,7 @@
 
 from django.urls import path
 from .views import (
-    ExpenseCreateAPIView, ExpenseListAPIView, extract_receipt_info, categorize_items,
+    ExpenseCreateAPIView, ExpenseListAPIView,  categorize_items,
     get_expense_items, get_monthly_totals, predict_next_month, set_budget, get_budget,
     monthly_budget_progress, get_category_monthly_budget, get_budget_dashboard_stats,
     category_summary, ExpenseDetailAPIView, ExpenseItemUpdateAPIView, ExpenseItemDeleteAPIView
@@ -24,7 +24,6 @@ from .views import (
 from . import views
 
 urlpatterns = [
-    path("extract/", extract_receipt_info, name="extract-receipt"),
     path("", ExpenseCreateAPIView.as_view(), name="create-expense"),
     path("list/", ExpenseListAPIView.as_view(), name="list-expense"),
     path("categorize-items/", categorize_items, name="categorize-items"),
