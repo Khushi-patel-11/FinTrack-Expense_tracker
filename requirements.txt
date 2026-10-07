@@ -6,7 +6,7 @@ djangorestframework==3.16.0
 gensim==4.3.3
 joblib==1.5.1
 numpy==1.26.4
-scikit-learn==1.7.0
+scikit-learn==1.6.1
 sentence-transformers==5.0.0
 torch==2.7.1
 attrs==25.3.0
